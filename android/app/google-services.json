@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "27023758316",
+    "project_id": "hotpro-3b874",
+    "storage_bucket": "hotpro-3b874.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27023758316:android:a23c82b07cafe77037a6c9",
+        "android_client_info": {
+          "package_name": "com.example.hotpro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsTZwrxvCl5T4HuJWCYw0ssIt8Alq4Q-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
