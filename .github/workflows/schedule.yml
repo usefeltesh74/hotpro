@@ -29,5 +29,5 @@ jobs:
         run: echo "$FIREBASE_SERVICE_ACCOUNT_KEY" > ./firestore-update/hotpro-3b874-firebase-adminsdk-9hatj-242974e7c8.json
 
       - name: Run Firestore update script
-        run: node updateSpecificDocument.js
+        run: node updateFirestore.js
         working-directory: ./firestore-update
