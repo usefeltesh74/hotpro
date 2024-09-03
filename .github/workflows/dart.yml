@@ -16,7 +16,7 @@ jobs:
     - name: Install Flutter SDK
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.13.0'  # Specify the Flutter version that matches your project requirements
+        flutter-version: '3.24.0'  # Specify the Flutter version that matches your project requirements
 
     - name: Install dependencies
       run: flutter pub get
