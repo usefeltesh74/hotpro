@@ -7,10 +7,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:hotpro/main.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'test_setup.dart' ; // Import the setup file
 
-void main() {
+void main() async {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  await initializeFirebase();  // Initialize Firebase
+
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
@@ -28,3 +32,4 @@ void main() {
     expect(find.text('1'), findsOneWidget);
   });
 }
+
