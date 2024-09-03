@@ -2,7 +2,7 @@ name: Update Firestore Weekly
 
 on:
   schedule:
-    - cron: '*/2 * * * *'  # Runs every Monday at 09:00 UTC
+    - cron: '*/5 * * * *'
 
 jobs:
   update-firestore:
