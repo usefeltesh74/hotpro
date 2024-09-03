@@ -22,7 +22,7 @@ async function updateSpecificDocument() {
     const data = doc.data();
     const newValue = (data.profit || 3) + 10; // Replace with your field and operation
 
-    await docRef.update({ yourField: newValue }); // Replace with your field name
+    await docRef.update({ profit: newValue }); // Replace with your field name
 
     console.log('Document updated successfully');
   } catch (error) {
