@@ -1,7 +1,6 @@
 const admin = require('firebase-admin');
 const serviceAccount = require('./hotpro-3b874-firebase-adminsdk-9hatj-242974e7c8.json'); // Path from working-directory
 
-
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   // No need for databaseURL if you're using Firestore
@@ -9,17 +8,26 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-async function updateDocuments() {
-  const collectionRef = db.collection('fantasy'); // Replace with your collection name
-  const snapshot = await collectionRef.get();
+async function updateSpecificDocument() {
+  try {
+    // Replace with your collection name and document ID
+    const docRef = db.collection('fantasy').doc('0q82LrYr9tU8o95uKgT8RnRArng1'); // Update with your specific document ID
 
-  snapshot.forEach(async (doc) => {
+    const doc = await docRef.get();
+    if (!doc.exists) {
+      console.log('No such document!');
+      return;
+    }
+
     const data = doc.data();
-    const newValue = (data.yourfield || 0) + 10;  // Replace with your field and operation
-    await doc.ref.update({ yourField: newValue }); // Replace with your field name
-  });
+    const newValue = (data.profit || 3) + 10; // Replace with your field and operation
 
-  console.log('Documents updated successfully');
+    await docRef.update({ yourField: newValue }); // Replace with your field name
+
+    console.log('Document updated successfully');
+  } catch (error) {
+    console.error('Error updating document: ', error);
+  }
 }
 
-updateDocuments().catch(console.error);
+updateSpecificDocument().catch(console.error);
