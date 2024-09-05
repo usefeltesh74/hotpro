@@ -1,0 +1,33 @@
+name: Update Firestore Document Every 5 Minutes
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Runs every 5 minutes
+
+jobs:
+  update-firestore:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Create directory for Firebase key
+        run: mkdir -p ./firestore-update
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./firestore-update
+
+      - name: Write Firebase service account key
+        env:
+          FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+        run: echo "$FIREBASE_SERVICE_ACCOUNT_KEY" > ./firestore-update/hotpro-3b874-firebase-adminsdk-9hatj-242974e7c8.json
+
+      - name: Run Firestore update script
+        run: node updateFirestore.js
+        working-directory: ./firestore-update
