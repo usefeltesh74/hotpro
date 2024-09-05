@@ -17,7 +17,7 @@ class _ResultlistState extends State<Resultlist> {
   Fantasy_model? fantUser;
   int p1oints=0,p2oints=0,p3oints=0;
   GetPlayerPoints getpoints = GetPlayerPoints();
-  Future<void> _updatePoints() async {
+  Future<void> updatePoints() async {
     try {
       final p1 = await getpoints.fetchPlayerGameweekPoints(3, fantUser!.player1id);
       final p2 = await getpoints.fetchPlayerGameweekPoints(3, fantUser!.player2id);
@@ -27,6 +27,7 @@ class _ResultlistState extends State<Resultlist> {
         p1oints = p1;
         p2oints = p2;
         p3oints = p3;
+
       });
     } catch (e) {
       print('Error fetching player points: $e');
@@ -40,7 +41,7 @@ class _ResultlistState extends State<Resultlist> {
     super.initState();
     // Fetch data when the widget is first built
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _updatePoints();
+      updatePoints();
     });
   }
 
@@ -83,7 +84,12 @@ class _ResultlistState extends State<Resultlist> {
     }
 
     return RefreshIndicator(
-      onRefresh: _updatePoints,
+      onRefresh: updatePoints,
+        // setState(() {
+        //   DatabaseService(uid: userinfo!.userid).updateUserData(fantUser!.username, fantUser!.player1, fantUser!.player1bid, fantUser!.player1id,p1oints, fantUser!.player2, fantUser!.player2bid, fantUser!.player2id, p2oints, fantUser!.player3, fantUser!.player3bid, fantUser!.player3id, p3oints, fantUser!.Gwbiid, fantUser!.profit, fantUser!.Budget, fantUser!.play);
+        // });
+
+
       child: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [

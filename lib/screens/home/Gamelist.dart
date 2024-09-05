@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:hotpro/services/Cloud%20firestore.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +12,7 @@ import 'package:hotpro/screens/home/teamDropmenu.dart';
 import 'package:hotpro/models/playermodel.dart';
 import 'package:hotpro/services/GetPlayers.dart';
 import 'package:hotpro/screens/home/GetplayerPoints.dart';
+import 'package:hotpro/services/getPlayerFantasydata.dart';
 class GameList extends StatefulWidget {
   const GameList({Key? key}) : super(key: key);
 
@@ -32,9 +35,19 @@ class _GameListState extends State<GameList> {
   TextEditingController player2Controller = TextEditingController();
   TextEditingController player3Controller = TextEditingController();
 
-  GetPlayerPoints getpoints = GetPlayerPoints();
-   int p1oints=0,p2oints=0,p3oints=0;
+  //GetPlayerPoints getpoints = GetPlayerPoints();
+   //int p1oints=0,p2oints=0,p3oints=0;
    int plr1id=0,plr2id=0,plr3id=0;
+   //int plr1Teampos=0,plr2Teampos=0,plr3Teampos=0;
+
+   FplPlayerdata p1fpldata = FplPlayerdata();
+   FplPlayerdata p2fpldata = FplPlayerdata();
+   FplPlayerdata p3fpldata = FplPlayerdata();
+   Future<void> playersFantasydata(int plr1id,int plr2id,int plr3id) async {
+      await p1fpldata.fetchPlayerData(plr1id);
+      await p2fpldata.fetchPlayerData(plr2id);
+      await p3fpldata.fetchPlayerData(plr3id);
+   }
 
 
   @override
@@ -279,9 +292,10 @@ class _GameListState extends State<GameList> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 0, horizontal: 100),
               child: ElevatedButton.icon(
-                onPressed: () {
+                onPressed: () async {
+                  await playersFantasydata(plr1id, plr2id, plr3id);
                   final budget = fantUser!.Budget - player1bid - player2bid - player3bid - teambid;
-                  DatabaseService(uid: userinfo.userid).updateUserData(fantUser!.username, name1, player1bid,plr1id,p1oints, name2, player2bid,plr2id,p2oints, name3, player3bid,plr3id,p3oints, teambid, fantUser!.profit, budget, true);
+                  DatabaseService(uid: userinfo.userid).updateUserData(fantUser!.username, name1, player1bid,plr1id,0,p1fpldata.ownership,p1fpldata.price,p1fpldata.teamPosition, name2, player2bid,plr2id,0,p2fpldata.ownership,p2fpldata.price,p2fpldata.teamPosition, name3, player3bid,plr3id,0,p3fpldata.ownership,p3fpldata.price,p3fpldata.teamPosition, teambid, fantUser!.profit, budget, true);
                   // Handle the submit action
                   print("${fantUser!.player1points}");
                 },
