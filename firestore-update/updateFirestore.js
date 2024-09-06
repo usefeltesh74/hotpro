@@ -126,7 +126,7 @@ function calc(ownershipfactor, rankingfactor, pricefactor, points, playerbet) {
 }
 
 // Function to fetch player points from the FPL API
-async function getPlayerPoints(playerId, gameweek) {
+async function getPlayerPoints(playerId) {
   try {
     const response = await axios.get("https://fantasy.premierleague.com/api/event/3/live/");
     const players = response.data.elements;
@@ -147,7 +147,7 @@ async function getPlayerPoints(playerId, gameweek) {
 
 
 // Example Firestore Document Update with API points fetching
-async function updateSpecificDocument(gameweek) {
+async function updateSpecificDocument() {
   try {
     const docRef = db.collection('fantasy').doc('0q82LrYr9tU8o95uKgT8RnRArng1');
     const doc = await docRef.get();
@@ -161,9 +161,9 @@ async function updateSpecificDocument(gameweek) {
     const player2Id = doc.get('player2id');
     const player3Id = doc.get('player3id');
 
-    const player1points = await getPlayerPoints(player1Id, gameweek);
-    const player2points = await getPlayerPoints(player2Id, gameweek);
-    const player3points = await getPlayerPoints(player3Id, gameweek);
+    const player1points = await getPlayerPoints(player1Id);
+    const player2points = await getPlayerPoints(player2Id);
+    const player3points = await getPlayerPoints(player3Id);
 
     // PLAYER 1 calculations
     const ownership1Value = doc.get('player1ows');
@@ -206,13 +206,13 @@ async function updateSpecificDocument(gameweek) {
 
     // Update Firestore document with calculated profit and budget
     await docRef.update({
-      profit: doc.get('profit') + player1profit + player2profit + player3profit,
-      Budget: doc.get('Budget') + player1delevary + player2delevary + player3delevary,
-      player1points : player1points,
-      player2points : player2points,
-      player3points : player3points,
-
+      profit: Math.round(doc.get('profit') + player1profit + player2profit + player3profit),
+      Budget: Math.round(doc.get('Budget') + player1delevary + player2delevary + player3delevary),
+      player1points: player1points,
+      player2points: player2points,
+      player3points: player3points,
     });
+
 
     console.log('Document successfully updated!');
   } catch (error) {
@@ -221,4 +221,4 @@ async function updateSpecificDocument(gameweek) {
 }
 
 // Call the function with a specific gameweek
-updateSpecificDocument(3); // Pass the gameweek number when calling the function
+updateSpecificDocument(); // Pass the gameweek number when calling the function
