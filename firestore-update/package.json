@@ -7,7 +7,7 @@
     "start": "node updateFirestore.js"
   },
   "dependencies": {
-    "firebase-admin": "^10.0.0"
+    "firebase-admin": "^10.0.0",
     "axios": "^0.27.2"
   },
   "license": "ISC"
