@@ -1,4 +1,5 @@
 const admin = require('firebase-admin');
+const axios = require('axios');
 const serviceAccount = require('./hotpro-3b874-firebase-adminsdk-9hatj-242974e7c8.json'); // Path from working-directory
 
 admin.initializeApp({
@@ -56,6 +57,7 @@ const teamRankingMultiplierDivider = [
   { teamRanking: 20, multiplier: 0.67, divider: 0.1 }
 ];
 
+// Price Multiplier and Divider List
 const priceMultiplierDivider = [
   { price: 4.5, multiplier: 0.6, divider: 0.2 },
   { price: 5, multiplier: 0.55, divider: 0.25 },
@@ -112,6 +114,7 @@ function findPriceMultiplierDivider(value) {
   return priceMultiplierDivider[priceMultiplierDivider.length - 1];
 }
 
+// Function to calculate the delivery amount based on factors
 function calc(ownershipfactor, rankingfactor, pricefactor, points, playerbet) {
   if (points >= playerbet / 10000) {
     const multfac = ownershipfactor.multiplier + rankingfactor.multiplier + pricefactor.multiplier + 1;
@@ -122,66 +125,88 @@ function calc(ownershipfactor, rankingfactor, pricefactor, points, playerbet) {
   }
 }
 
-// Example Firestore Document Update
-async function updateSpecificDocument() {
+// Function to fetch player points from the FPL API
+async function getPlayerPoints(playerId, gameweek) {
+  try {
+    const response = await axios.get(`https:fantasy.premierleague.com/api/event/${gameweek}/live/`);
+    const players = response.data.elements;
+
+    // Find the player by ID
+    const playerData = players.find(player => player.id === playerId);
+    if (playerData) {
+      return playerData.stats.total_points; // Return the player's total points
+    } else {
+      console.log(`Player with ID ${playerId} not found`);
+      return 0;
+    }
+  } catch (error) {
+    console.error('Error fetching player points:', error);
+    return 0;
+  }
+}
+
+// Example Firestore Document Update with API points fetching
+async function updateSpecificDocument(gameweek) {
   try {
     const docRef = db.collection('fantasy').doc('0q82LrYr9tU8o95uKgT8RnRArng1');
-
     const doc = await docRef.get();
     if (!doc.exists) {
       console.log('No such document!');
       return;
     }
 
-    /// Calculate profit and budget with the 3 players
-    //PLAYER 1
-    const ownership1Value = doc.get('player1ows');  // Accessing with string
-    const teamRanking1Value = doc.get('player1 team position');  // Accessing with string
-    const player1Price = doc.get("player1price");  // Fetch player price
-    const player1points = doc.get("player1points");
-    const player1bet = doc.get("player1bid");
+    // Fetch points for each player from FPL API
+    const player1Id = doc.get('player1id');
+    const player2Id = doc.get('player2id');
+    const player3Id = doc.get('player3id');
+
+    const player1points = await getPlayerPoints(player1Id, gameweek);
+    const player2points = await getPlayerPoints(player2Id, gameweek);
+    const player3points = await getPlayerPoints(player3Id, gameweek);
+
+    // PLAYER 1 calculations
+    const ownership1Value = doc.get('player1ows');
+    const teamRanking1Value = doc.get('player1 team position');
+    const player1Price = doc.get('player1price');
+    const player1bet = doc.get('player1bid');
 
     const ownership1Data = findOwnershipMultiplierDivider(ownership1Value);
     const teamRanking1Data = findTeamRankingMultiplierDivider(teamRanking1Value);
-    const price1Data = findPriceMultiplierDivider(player1Price);  // Get price data
+    const price1Data = findPriceMultiplierDivider(player1Price);
 
     const player1delevary = calc(ownership1Data, teamRanking1Data, price1Data, player1points, player1bet);
     const player1profit = player1delevary - player1bet;
 
-    //PLAYER 2
-    const ownership2Value = doc.get('player2ows');  // Accessing with string
-    const teamRanking2Value = doc.get('player2 team position');  // Accessing with string
-    const player2Price = doc.get("player2price");  // Fetch player price
-    const player2points = doc.get("player2points");
-    const player2bet = doc.get("player2bid");
+    // PLAYER 2 calculations
+    const ownership2Value = doc.get('player2ows');
+    const teamRanking2Value = doc.get('player2 team position');
+    const player2Price = doc.get('player2price');
+    const player2bet = doc.get('player2bid');
 
     const ownership2Data = findOwnershipMultiplierDivider(ownership2Value);
     const teamRanking2Data = findTeamRankingMultiplierDivider(teamRanking2Value);
-    const price2Data = findPriceMultiplierDivider(player2Price);  // Get price data
+    const price2Data = findPriceMultiplierDivider(player2Price);
 
     const player2delevary = calc(ownership2Data, teamRanking2Data, price2Data, player2points, player2bet);
     const player2profit = player2delevary - player2bet;
 
-    //Player 3
-
-    const ownership3Value = doc.get('player3ows');  // Accessing with string
-    const teamRanking3Value = doc.get('player3 team position');  // Accessing with string
-    const player3Price = doc.get("player3price");  // Fetch player price
-    const player3points = doc.get("player3points");
-    const player3bet = doc.get("player3bid");
+    // PLAYER 3 calculations
+    const ownership3Value = doc.get('player3ows');
+    const teamRanking3Value = doc.get('player3 team position');
+    const player3Price = doc.get('player3price');
+    const player3bet = doc.get('player3bid');
 
     const ownership3Data = findOwnershipMultiplierDivider(ownership3Value);
     const teamRanking3Data = findTeamRankingMultiplierDivider(teamRanking3Value);
-    const price3Data = findPriceMultiplierDivider(player3Price);  // Get price data
+    const price3Data = findPriceMultiplierDivider(player3Price);
 
     const player3delevary = calc(ownership3Data, teamRanking3Data, price3Data, player3points, player3bet);
     const player3profit = player3delevary - player3bet;
 
-
-
+    // Update Firestore document with calculated profit and budget
     await docRef.update({
-      profit: doc.get('profit') + player1profit + player2profit + player3profit ;
-      Budget: doc.get('Budget') + player1delevary + player2delevary + player3delevary;
+      profit: doc.get('profit') + player1profit + player2profit + player3profit,
+      Budget: doc.get('Budget') + player1delevary + player2delevary + player3delevary
     });
 
     console.log('Document successfully updated!');
@@ -190,4 +215,5 @@ async function updateSpecificDocument() {
   }
 }
 
-updateSpecificDocument();
+// Call the function with a specific gameweek
+updateSpecificDocument(3); // Pass the gameweek number when calling the function
