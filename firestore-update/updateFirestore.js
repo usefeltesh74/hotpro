@@ -128,7 +128,7 @@ function calc(ownershipfactor, rankingfactor, pricefactor, points, playerbet) {
 // Function to fetch player points from the FPL API
 async function getPlayerPoints(playerId, gameweek) {
   try {
-    const response = await axios.get("https://fantasy.premierleague.com/api/event/${gameweek}/live/");
+    const response = await axios.get("https://fantasy.premierleague.com/api/event/3/live/");
     const players = response.data.elements;
 
     // Find the player by ID
