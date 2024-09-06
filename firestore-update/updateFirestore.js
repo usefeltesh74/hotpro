@@ -206,7 +206,11 @@ async function updateSpecificDocument(gameweek) {
     // Update Firestore document with calculated profit and budget
     await docRef.update({
       profit: doc.get('profit') + player1profit + player2profit + player3profit,
-      Budget: doc.get('Budget') + player1delevary + player2delevary + player3delevary
+      Budget: doc.get('Budget') + player1delevary + player2delevary + player3delevary,
+      player1points : player1points,
+      player2points : player2points,
+      player3points : player3points,
+
     });
 
     console.log('Document successfully updated!');
