@@ -9,7 +9,7 @@ admin.initializeApp({
 const db = admin.firestore();
 
 async function getUserGWPoints(userId, gwId) {
-  const url = "https://fantasy.premierleague.com/api/entry/519066/event/3/picks/";
+  const url = `https://fantasy.premierleague.com/api/entry/${userId}/event/3/picks/`;
 
   try {
     const response = await axios.get(url);
