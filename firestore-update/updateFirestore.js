@@ -275,8 +275,8 @@ async function updateSpecificDocument(GW) {
 
     // Update Firestore document with calculated profit and budget
     await docRef.update({
-      profit: Math.round(doc.get('profit') + player1profit + player2profit + player3profit),
-      Budget: Math.round(doc.get('Budget') + player1delevary + player2delevary + player3delevary),
+      profit: Math.round(doc.get('profit') + player1profit + player2profit + player3profit + teamProfit),
+      Budget: Math.round(doc.get('Budget') + player1delevary + player2delevary + player3delevary + teamDelivery),
       player1profit: player1profit,
       player2profit: player2profit,
       player3profit: player3profit,
