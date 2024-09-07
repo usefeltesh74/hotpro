@@ -14,7 +14,8 @@ async function getUserGWPoints(userId, gwId) {
   try {
     const response = await axios.get(url);
     const data = response.data;
-    console.log(data);  // Contains player picks, captain, and points
+    const totalPoints = data.entry_history.points;
+    console.log("total points for GW 3 : ${totalPoints}");  // Contains player picks, captain, and points
 
     // You can then extract points and player details from this data
   } catch (error) {
