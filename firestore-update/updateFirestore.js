@@ -10,7 +10,7 @@ const db = admin.firestore();
 
 async function getUserTeamPoints(userId, gw) {
     try {
-        const response = await axios.get("https://fantasy.premierleague.com/api/entry/519066/event/3/live/");
+        const response = await axios.get("https://fantasy.premierleague.com/api/entry/519066/event/3/");
         const userData = response.data;
 
         // Get the total points for the user's team
