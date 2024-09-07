@@ -8,6 +8,21 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
+async function getUserTeamPoints(userId, gw) {
+    try {
+        const response = await axios.get("https://fantasy.premierleague.com/api/entry/519066/event/3/live/");
+        const userData = response.data;
+
+        // Get the total points for the user's team
+        const totalPoints = userData.summary.points;
+
+        return totalPoints;
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        return null;
+    }
+}
+
 // Ownership Multiplier and Divider List
 const ownershipMultiplierDivider = [
   { ownership: 0, multiplier: 0.6, divider: 0.1 },
@@ -221,4 +236,10 @@ async function updateSpecificDocument() {
 }
 
 // Call the function with a specific gameweek
-updateSpecificDocument(); // Pass the gameweek number when calling the function
+//updateSpecificDocument();// Pass the gameweek number when calling the function
+
+const userId = 123456; // Replace with the actual user ID
+const gw = 3; // Replace with the actual Gameweek number
+getUserTeamPoints(userId, gw).then(points => {
+    console.log("User's total points for GW${gw}:", points);
+});
