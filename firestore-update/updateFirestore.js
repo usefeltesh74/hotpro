@@ -8,20 +8,7 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-async function getUserGWPoints(userId, gwId) {
-  const url = `https://fantasy.premierleague.com/api/entry/${userId}/event/3/picks/`;
 
-  try {
-    const response = await axios.get(url);
-    const data = response.data;
-    const totalPoints = data.entry_history.points;
-    console.log("total points for GW 3 :" + totalPoints);  // Contains player picks, captain, and points
-
-    // You can then extract points and player details from this data
-  } catch (error) {
-    console.error('Error fetching user data:', error.message);
-  }
-}
 // Ownership Multiplier and Divider List
 const ownershipMultiplierDivider = [
   { ownership: 0, multiplier: 0.6, divider: 0.1 },
@@ -89,6 +76,19 @@ const priceMultiplierDivider = [
   { price: 15, multiplier: 0.1, divider: 0.75 }
 ];
 
+const teambetMultiplierDivider = [
+  { points: 10, multiplier: 1.1, divider: 1.1 },
+  { points: 20, multiplier: 1.2, divider: 1.2 },
+  { points: 30, multiplier: 1.3, divider: 1.3 },
+  { points: 40, multiplier: 1.4, divider: 1.4 },
+  { points: 50, multiplier: 1.5, divider: 1.5 },
+  { points: 60, multiplier: 1.6, divider: 1.6 },
+  { points: 70, multiplier: 1.7, divider: 1.7 },
+  { points: 80, multiplier: 1.8, divider: 1.8 },
+  { points: 90, multiplier: 1.9, divider: 1.9 },
+  { points: 100, multiplier: 2.0, divider: 2.0 }
+];
+
 // Function to find the multiplier and divider for a given ownership value
 function findOwnershipMultiplierDivider(value) {
   for (let i = 0; i < ownershipMultiplierDivider.length - 1; i++) {
@@ -128,6 +128,18 @@ function findPriceMultiplierDivider(value) {
   return priceMultiplierDivider[priceMultiplierDivider.length - 1];
 }
 
+function findTeambetMultiplierDivider(points) {
+  for (let i = 0; i < teambetMultiplierDivider.length - 1; i++) {
+    const current = teambetMultiplierDivider[i];
+    const next = teambetMultiplierDivider[i + 1];
+
+    if (points >= current.points && points < next.points) {
+      return { multiplier: current.multiplier, divider: current.divider };
+    }
+  }
+  return teambetMultiplierDivider[teambetMultiplierDivider.length - 1];
+}
+
 // Function to calculate the delivery amount based on factors
 function calc(ownershipfactor, rankingfactor, pricefactor, points, playerbet) {
   if (playerbet / 10000 >= points) {
@@ -139,10 +151,21 @@ function calc(ownershipfactor, rankingfactor, pricefactor, points, playerbet) {
   }
 }
 
+function calcTeambet(teamMultiplierDivider, teambet, teamPoints) {
+  const teamMultiplier = teamMultiplierDivider.multiplier;
+  const teamDivider = teamMultiplierDivider.divider;
+
+  if (teambet / 10000 >= teamPoints) {
+    return teambet * teamMultiplier;
+  } else {
+    return teambet / teamDivider;
+  }
+}
+
 // Function to fetch player points from the FPL API
-async function getPlayerPoints(playerId) {
+async function getPlayerPoints(playerId,GW) {
   try {
-    const response = await axios.get("https://fantasy.premierleague.com/api/event/3/live/");
+    const response = await axios.get(`https://fantasy.premierleague.com/api/event/${GW}/live/`);
     const players = response.data.elements;
 
     // Find the player by ID
@@ -159,9 +182,27 @@ async function getPlayerPoints(playerId) {
   }
 }
 
+async function getUserGWPoints(userId, gwId) {
+  const url = `https://fantasy.premierleague.com/api/entry/${userId}/event/${gwId}/picks/`;
+
+  try {
+    const response = await axios.get(url);
+    const data = response.data;
+    const totalPoints = data.entry_history.points;
+    console.log("total points for GW 3 :" + totalPoints);  // Contains player picks, captain, and points
+
+    return totalPoints;
+    // You can then extract points and player details from this data
+  } catch (error) {
+    console.error('Error fetching user data:', error.message);
+    return null;
+  }
+
+}
+
 
 // Example Firestore Document Update with API points fetching
-async function updateSpecificDocument() {
+async function updateSpecificDocument(GW) {
   try {
     const docRef = db.collection('fantasy').doc('0q82LrYr9tU8o95uKgT8RnRArng1');
     const doc = await docRef.get();
@@ -175,9 +216,9 @@ async function updateSpecificDocument() {
     const player2Id = doc.get('player2id');
     const player3Id = doc.get('player3id');
 
-    const player1points = await getPlayerPoints(player1Id);
-    const player2points = await getPlayerPoints(player2Id);
-    const player3points = await getPlayerPoints(player3Id);
+    const player1points = await getPlayerPoints(player1Id,GW);
+    const player2points = await getPlayerPoints(player2Id,GW);
+    const player3points = await getPlayerPoints(player3Id,GW);
 
     // PLAYER 1 calculations
     const ownership1Value = doc.get('player1ows');
@@ -218,13 +259,28 @@ async function updateSpecificDocument() {
     const player3delevary = calc(ownership3Data, teamRanking3Data, price3Data, player3points, player3bet);
     const player3profit = player3delevary - player3bet;
 
+    //Teambet calculations
+    const teambet = doc.get('teambid');
+    const teamid = doc.get('teamid');
+
+    teampoints = getUserGWPoints(teamid, GW);
+
+    teamMultdiv = findTeambetMultiplierDivider(teampoints);
+    const teamDelivery = calcTeambet(teamMultdiv, teambet, teampoints);
+    const teamProfit = teamDelivery - teambet;
+
+
+
+
+
     // Update Firestore document with calculated profit and budget
     await docRef.update({
       profit: Math.round(doc.get('profit') + player1profit + player2profit + player3profit),
       Budget: Math.round(doc.get('Budget') + player1delevary + player2delevary + player3delevary),
-      player1points: player1points,
-      player2points: player2points,
-      player3points: player3points,
+      player1profit: player1profit,
+      player2profit: player2profit,
+      player3profit: player3profit,
+      teamProfit: teamProfit,
     });
 
 
@@ -235,6 +291,6 @@ async function updateSpecificDocument() {
 }
 
 // Call the function with a specific gameweek
-//updateSpecificDocument();// Pass the gameweek number when calling the function
+updateSpecificDocument(3);// Pass the gameweek number when calling the function
 
-getUserGWPoints(519066, 3);
+
