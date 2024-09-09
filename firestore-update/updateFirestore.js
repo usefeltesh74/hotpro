@@ -131,9 +131,9 @@ function findPriceMultiplierDivider(value) {
 function findTeambetMultiplierDivider(points) {
   for (let i = 0; i < teambetMultiplierDivider.length - 1; i++) {
     const current = teambetMultiplierDivider[i];
-    const next = teambetMultiplierDivider[i + 1];
+    //const next = teambetMultiplierDivider[i + 1];
 
-    if (points >= current.points && points < next.points) {
+    if (points == current.points ) {
       return { multiplier: current.multiplier, divider: current.divider };
     }
   }
@@ -262,11 +262,12 @@ async function updateSpecificDocument(GW) {
     //Teambet calculations
     const teambet = doc.get('teambid');
     const teamid = doc.get('teamid');
+    const teambetpoints = teambet / 10000;
 
-    teampoints = parseInt(await getUserGWPoints(teamid, GW), 10);
+    const teampoints = parseInt(await getUserGWPoints(teamid, GW), 10);
 
 
-    teamMultdiv = findTeambetMultiplierDivider(teambet/10000);
+    const teamMultdiv = findTeambetMultiplierDivider(teambetpoints);
     const teamDelivery = calcTeambet(teamMultdiv, teambet, teampoints);
     const teamProfit = teamDelivery - teambet;
 
