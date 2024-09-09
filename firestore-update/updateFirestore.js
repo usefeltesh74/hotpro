@@ -330,7 +330,7 @@ async function UpdateMissingFields() {
         [`player3profit`]: 0,
         [`teamProfit`]: 0,
         [`teamid`]: 0
-        [`FantasyteamPoints`]: 0
+        [`FantasyteamPoints`]: 0,
 
       };
 
