@@ -142,7 +142,7 @@ function findTeambetMultiplierDivider(points) {
 
 // Function to calculate the delivery amount based on factors
 function calc(ownershipfactor, rankingfactor, pricefactor, points, playerbet) {
-  if (points >= playerbet / 10000 ) {
+  if (playerbet / 10000 >= points ) {
     const multfac = ownershipfactor.multiplier + rankingfactor.multiplier + pricefactor.multiplier + 1;
     return playerbet * multfac;
   } else {
@@ -155,7 +155,7 @@ function calcTeambet(teamMultiplierDivider, teambet, teamPoints) {
   const teamMultiplier = teamMultiplierDivider.multiplier;
   const teamDivider = teamMultiplierDivider.divider;
 
-  if (teamPoints >=  teambet / 10000) {
+  if (teambet / 10000 >= teamPoints ) {
     return teambet * teamMultiplier;
   } else {
     return teambet / teamDivider;
