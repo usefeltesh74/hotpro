@@ -131,9 +131,9 @@ function findPriceMultiplierDivider(value) {
 function findTeambetMultiplierDivider(points) {
   for (let i = 0; i < teambetMultiplierDivider.length - 1; i++) {
     const current = teambetMultiplierDivider[i];
-    //const next = teambetMultiplierDivider[i + 1];
+    const next = teambetMultiplierDivider[i + 1];
 
-    if (points == current.points ) {
+    if (points >= current.points && points <= next.points ) {
       return { multiplier: current.multiplier, divider: current.divider };
     }
   }
