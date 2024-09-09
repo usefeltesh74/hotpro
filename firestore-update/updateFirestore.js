@@ -284,7 +284,7 @@ async function updateSpecificDocument(GW) {
       player1points:player1points,
       player2points:player2points,
       player3points:player3points,
-      //teamPoints: teampoints,
+      teamPoints: teampoints,
       teamProfit: teamProfit,
     });
 
