@@ -48,11 +48,11 @@ class fireauth
 
   // Sign up with email and password
 
-  Future Signup_with_email_and_password(String email , String password,String username)async{
+  Future Signup_with_email_and_password(String email , String password,String username,int teamid)async{
     try{
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User? user = result.user;
-      await DatabaseService(uid: user!.uid).updateUserData(username," ", 0,0,0,0,0,0, " ",0,0,0,0,0,0," ", 0,0,0,0,0,0, 0 , 0, 1000000 , false);
+      await DatabaseService(uid: user!.uid).updateUserData(username,teamid," ", 0,0,0,0,0,0, " ",0,0,0,0,0,0," ", 0,0,0,0,0,0, 0 , 0, 1000000 , false);
       return _userfromfirebaseuser(user);
     }
     catch(e){

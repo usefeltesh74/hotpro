@@ -102,6 +102,7 @@ class _GameListState extends State<GameList> {
           player1points: doc['player1points'],
           player2points: doc['player2points'],
           player3points: doc['player3points'],
+          teamid: doc['teamid'],
         );
         break;
       }
@@ -295,7 +296,7 @@ class _GameListState extends State<GameList> {
                 onPressed: () async {
                   await playersFantasydata(plr1id, plr2id, plr3id);
                   final budget = fantUser!.Budget - player1bid - player2bid - player3bid - teambid;
-                  DatabaseService(uid: userinfo.userid).updateUserData(fantUser!.username, name1, player1bid,plr1id,0,p1fpldata.ownership,p1fpldata.price,p1fpldata.teamPosition, name2, player2bid,plr2id,0,p2fpldata.ownership,p2fpldata.price,p2fpldata.teamPosition, name3, player3bid,plr3id,0,p3fpldata.ownership,p3fpldata.price,p3fpldata.teamPosition, teambid, fantUser!.profit, budget, true);
+                  DatabaseService(uid: userinfo.userid).updateUserData(fantUser!.username,fantUser!.teamid,name1, player1bid,plr1id,0,p1fpldata.ownership,p1fpldata.price,p1fpldata.teamPosition, name2, player2bid,plr2id,0,p2fpldata.ownership,p2fpldata.price,p2fpldata.teamPosition, name3, player3bid,plr3id,0,p3fpldata.ownership,p3fpldata.price,p3fpldata.teamPosition, teambid, fantUser!.profit, budget, true);
                   // Handle the submit action
                   print("${fantUser!.player1points}");
                 },

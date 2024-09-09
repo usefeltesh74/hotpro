@@ -18,6 +18,7 @@ class _registerState extends State<register> {
   String password = '';
   String username='';
   String error = '';
+  int teamid = 0;
   bool isloading = false;
   fireauth _auth = fireauth();
   final _formkey = GlobalKey<FormState>();
@@ -57,6 +58,25 @@ class _registerState extends State<register> {
                   ),
                   SizedBox(height: 20,),
                   TextFormField(
+                    decoration: text_input_dec.copyWith(hintText: 'Fantasy Team ID'),
+                    validator: (val) {
+                      if (val == null || val.isEmpty) {
+                        return "Enter fantasy ID";
+                      } else if (int.tryParse(val) == null) {
+                        return "Fantasy ID must be an integer";
+                      }
+                      return null;
+                    },
+
+                    style: TextStyle(color: Colors.black),
+                    cursorColor: Colors.blue,
+                    onChanged: (val){
+
+                      setState(() => teamid = int.tryParse(val) ?? 0);
+                    },
+                  ),
+                  SizedBox(height: 20,),
+                  TextFormField(
                     decoration: text_input_dec.copyWith(hintText: 'Email'),
                     validator: (val) => val!.isEmpty ? "enter the email" : null,
                     style: TextStyle(color: Colors.black),
@@ -84,7 +104,7 @@ class _registerState extends State<register> {
                     onPressed: () async {
                       if(_formkey.currentState!.validate()) {
                         setState(()=> isloading = true);
-                        dynamic result = await _auth.Signup_with_email_and_password(email, password,username);
+                        dynamic result = await _auth.Signup_with_email_and_password(email, password,username,teamid);
                         if(result == null)
                           {
                             setState(() {
