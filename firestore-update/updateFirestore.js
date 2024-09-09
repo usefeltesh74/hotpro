@@ -268,11 +268,11 @@ async function updateSpecificDocument(GW) {
 
 
     const teamMultdiv = findTeambetMultiplierDivider(teambetpoints);
-    console.log('${teamMultdiv}');
+    console.log('mult factor :'+teamMultdiv.multiplier);
     const teamDelivery = calcTeambet(teamMultdiv, teambet, teampoints);
-    console.log('${teamDelivery}');
+    console.log('deliv :'+ teamDelivery);
     const teamProfit = teamDelivery - teambet;
-    console.log('${teamProfit}');
+    console.log('team profit :' + teamProfit);
 
 
 
