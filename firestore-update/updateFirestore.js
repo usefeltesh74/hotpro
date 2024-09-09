@@ -263,7 +263,8 @@ async function updateSpecificDocument(GW) {
     const teambet = doc.get('teambid');
     const teamid = doc.get('teamid');
 
-    teampoints = getUserGWPoints(teamid, GW);
+    teampoints = parseInt(await getUserGWPoints(teamid, GW), 10);
+
 
     teamMultdiv = findTeambetMultiplierDivider(teampoints);
     const teamDelivery = calcTeambet(teamMultdiv, teambet, teampoints);
