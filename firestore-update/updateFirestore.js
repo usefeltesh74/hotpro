@@ -133,7 +133,7 @@ function findTeambetMultiplierDivider(points) {
     const current = teambetMultiplierDivider[i];
     const next = teambetMultiplierDivider[i + 1];
 
-    if (points >= current.points && points <= next.points ) {
+    if ( points == current.points  ) {
       return { multiplier: current.multiplier, divider: current.divider };
     }
   }
@@ -288,7 +288,7 @@ async function updateSpecificDocument(GW) {
       player1points:player1points,
       player2points:player2points,
       player3points:player3points,
-      teamPoints: teampoints,
+      teamPoints: teampoints + 1,
       teamProfit: teamProfit,
     });
 
