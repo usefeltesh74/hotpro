@@ -155,7 +155,7 @@ function calcTeambet(teamMultiplierDivider, teambet, teamPoints) {
   const teamMultiplier = teamMultiplierDivider.multiplier;
   const teamDivider = teamMultiplierDivider.divider;
 
-  if (teambet / 10000 <= teamPoints ) {
+  if (teambet / 1000 <= teamPoints ) {
     return teambet * teamMultiplier;
   } else {
     return teambet / teamDivider;
