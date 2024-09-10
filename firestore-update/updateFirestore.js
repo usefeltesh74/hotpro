@@ -291,6 +291,7 @@ async function updateSpecificDocument(GW) {
       player3points:player3points,
       teamPoints: teampoints,
       teamProfit: Math.round(teamProfit),
+      play : false
     });
 
 
