@@ -262,7 +262,7 @@ async function updateSpecificDocument(GW) {
     //Teambet calculations
     const teambet = doc.get('teambid');
     const teamid = doc.get('teamid');
-    const teambetpoints = teambet / 10000;
+    const teambetpoints = teambet / 1000;
     console.log("teambet/10000 : "+ teambetpoints)
     const teampoints = parseInt(await getUserGWPoints(teamid, GW), 10);
 
