@@ -263,7 +263,7 @@ async function updateSpecificDocument(GW) {
     const teambet = doc.get('teambid');
     const teamid = doc.get('teamid');
     const teambetpoints = teambet / 1000;
-    console.log("teambet/10000 : "+ teambetpoints)
+    console.log("teambet/1000 : "+ teambetpoints)
     const teampoints = parseInt(await getUserGWPoints(teamid, GW), 10);
 
 
@@ -282,14 +282,14 @@ async function updateSpecificDocument(GW) {
     await docRef.update({
       profit: Math.round(doc.get('profit') + player1profit + player2profit + player3profit + teamProfit),
       Budget: Math.round(doc.get('Budget') + player1delevary + player2delevary + player3delevary + teamDelivery),
-      player1profit: player1profit,
-      player2profit: player2profit,
-      player3profit: player3profit,
+      player1profit: Math.round(player1profit),
+      player2profit: Math.round(player2profit),
+      player3profit: Math.round(player3profit),
       player1points:player1points,
       player2points:player2points,
       player3points:player3points,
       teamPoints: teampoints,
-      teamProfit: teamProfit,
+      teamProfit: Math.round(teamProfit),
     });
 
 
