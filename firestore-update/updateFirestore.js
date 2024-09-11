@@ -302,21 +302,21 @@ async function updateSpecificDocument(GW) {
 }
 
 // Call the function with a specific gameweek
-updateSpecificDocument(3);
+//updateSpecificDocument(3);
 
-//async function UpdateMissingFields() {
-//  const collectionRef = db.collection('fantasy');
-//  const snapshot = await collectionRef.get();
-//
-//  if (snapshot.empty) {
-//    console.log('No matching documents.');
-//    return;
-//  }
-//
-//  snapshot.forEach(async (doc) => {
-//    try {
-//      // Create an object dynamically with string keys
-//      const updateData = {
+async function UpdateMissingFields() {
+  const collectionRef = db.collection('fantasy');
+  const snapshot = await collectionRef.get();
+
+  if (snapshot.empty) {
+    console.log('No matching documents.');
+    return;
+  }
+
+  snapshot.forEach(async (doc) => {
+    try {
+      // Create an object dynamically with string keys
+      const updateData = {
 //        [`player1 team position`]: 0,
 //        [`player1id`]: 0,
 //        [`player1ows`]: 0,
@@ -339,20 +339,21 @@ updateSpecificDocument(3);
 //        [`teamid`]: 0,
 //        [`teamPoints`]: 0,
 //        [`GWprofit`]: 0,
-//
-//      };
-//
-//      // Update the document with dynamically created fields
-//      await doc.ref.update(updateData);
-//
-//      console.log(`Document ${doc.id} updated successfully`);
-//    } catch (error) {
-//      console.error(`Error updating document ${doc.id}:`, error);
-//    }
-//  });
-//}
-//
-//UpdateMissingFields();
+          [`GW`]: 3,
+
+      };
+
+      // Update the document with dynamically created fields
+      await doc.ref.update(updateData);
+
+      console.log(`Document ${doc.id} updated successfully`);
+    } catch (error) {
+      console.error(`Error updating document ${doc.id}:`, error);
+    }
+  });
+}
+
+UpdateMissingFields();
 
 
 
