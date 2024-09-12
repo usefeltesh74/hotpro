@@ -32,18 +32,24 @@ class home extends StatelessWidget {
       initialData: null,
       value: DatabaseService(uid: userinfo.userid).fandata,
       child: Scaffold(
-        backgroundColor: Colors.orange[300],
+        backgroundColor: Colors.teal[400],
           appBar: AppBar(
             //leading: Image.asset("assets/12-121809_premier-league-white-logo-hd-png-download.png"),
-            title: Text("FantasyXbet", style: TextStyle(fontWeight: FontWeight.bold),),
+            title: Text("FantasyXbet", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.orange, shadows: [
+              Shadow(
+                blurRadius: 10.0,
+                color: Colors.black,
+                offset: Offset(2.0, 2.0),
+              ),
+            ]),),
             //centerTitle: true,
-            backgroundColor: Colors.orange,
+            backgroundColor: Colors.teal[600],
             actions: <Widget>[
               Padding(
                 padding: EdgeInsets.only(right: 10),
                 child: ElevatedButton.icon(
-                  icon: Icon(Icons.logout),
-                  label: Text("Log out"),
+                  icon: Icon(Icons.logout,color: Colors.deepOrange,),
+                  label: Text("Log out",style: TextStyle(color: Colors.deepOrange),),
                   onPressed: () async {
                     try {
                       await _authserv.Sign_out();

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:hotpro/screens/home/GetplayerPoints.dart';
 import '../../models/fantasydata_model.dart';
 import '../../models/user_model.dart';
+import '../../shared/constants.dart';
 
 class Resultlist extends StatefulWidget {
   const Resultlist({super.key});
@@ -70,6 +71,15 @@ class _ResultlistState extends State<Resultlist> {
           player1id: doc['player1id'],
           player2id: doc['player2id'],
           player3id: doc['player3id'],
+          p1ows: doc['player1ows'],
+          p2ows: doc['player2ows'],
+          p3ows: doc['player3ows'],
+          p1price: doc['player1price'],
+          p2price: doc['player2price'],
+          p3price: doc['player3price'],
+          t1pos: doc['player1 team position'],
+          t2pos: doc['player2 team position'],
+          t3pos: doc['player3 team position'],
           Gwbiid: doc['teambid'],
           profit: doc['profit'],
           Budget: doc['Budget'],
@@ -94,7 +104,7 @@ class _ResultlistState extends State<Resultlist> {
         padding: const EdgeInsets.all(16.0),
         children: [
           Card(
-            color: Colors.tealAccent,
+            color: Colors.orange[400],
             elevation: 3,
             margin: EdgeInsets.only(bottom: 20),
             child: Padding(
@@ -115,65 +125,433 @@ class _ResultlistState extends State<Resultlist> {
             ),
           ),
 
-          Text(
-            "Your GW bets ${fantUser?.username} :",
-            style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),
+        RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: "Your GW bets ",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+              ),
+              TextSpan(
+                text: "${fantUser?.username} 👋",
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.orange, shadows: [
+                  Shadow(
+                    blurRadius: 10.0,
+                    color: Colors.black,
+                    offset: Offset(2.0, 2.0),
+                  ),
+                ]),
+              ),
+            ],
           ),
-          Card(
-            color: Colors.teal[50],
-            child: ListTile(
-              title: const Text('Player 1',),
-              subtitle: Text(fantUser!.player1,style: TextStyle(color: Colors.deepOrange,fontSize: 20,fontWeight: FontWeight.bold)),
-              trailing: Text("$p1oints Pts",style: TextStyle(color: Colors.green,fontSize: 24),),
+        ),
+
+        // Replace the ListTile for Player 1 with an ExpansionTile
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 10), // Adds vertical space between tiles
+            decoration: BoxDecoration(
+              color: Colors.teal[50],
+              shape: BoxShape.rectangle, // Ensures the shape is a rounded rectangle
+              borderRadius: BorderRadius.circular(20), // Circular edges
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 8,
+                  spreadRadius: 2,
+                  offset: Offset(0, 3), // Shadow position
+                ),
+              ],
             ),
-          ),
-          Card(
-            color: Colors.teal[50],
-            child: ListTile(
-              title: const Text('Player 1 Bet'),
-              subtitle: Text(fantUser!.player1bid.toString(),style: TextStyle(color: Colors.deepOrange,fontSize: 20,fontWeight: FontWeight.bold),),
-            ),
-          ),
-          Card(
-            color: Colors.teal[50],
-            child: ListTile(
-              title: const Text('Player 2'),
-              subtitle: Text(fantUser!.player2,style: TextStyle(color: Colors.deepOrange,fontSize: 20,fontWeight: FontWeight.bold)),
-              trailing: Text("$p2oints Pts",style: TextStyle(color: Colors.green,fontSize: 24),),
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                dividerColor: Colors.transparent, // Remove the divider line
+              ),
+              child: ExpansionTile(
+                title: Text(
+                  'Player 1',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  fantUser!.player1,
+                  style: TextStyle(
+                    color: Colors.deepOrange,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      "$p1oints Pts",
+                      style: TextStyle(color: Colors.green, fontSize: 24),
+                    ),
+                    SizedBox(width: 60,),
+                    Icon(
+                    Icons.expand_more, // Expand icon
+                    size: 30,
+                    color: Colors.orange[600], // Customize the color of the icon
+                  ),
+                ]
+                ),
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.orange[400],
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.transparent,
+                          spreadRadius: 7,
+                          blurRadius: 13,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+
+                    padding: EdgeInsets.all(20), // Adds padding to the container
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("bet :"),
+                            Text(
+                              '\$${fantUser!.player1bid}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10), // Space between rows
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("ownership :"),
+                            Text(
+                              '${fantUser!.p1ows}%',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("Cost :"),
+                            Text(
+                              '\$${fantUser!.p1price}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("Team Position :"),
+                            Text(
+                              '${fantUser!.t1pos}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 
-          Card(
-            color: Colors.teal[50],
-            child: ListTile(
-              title: const Text('Player 2 Bet'),
-              subtitle: Text(fantUser!.player2bid.toString(),style: TextStyle(color: Colors.deepOrange,fontSize: 20,fontWeight: FontWeight.bold)),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 10), // Adds vertical space between tiles
+            decoration: BoxDecoration(
+              color: Colors.teal[50],
+              shape: BoxShape.rectangle, // Ensures the shape is a rounded rectangle
+              borderRadius: BorderRadius.circular(20), // Circular edges
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 8,
+                  spreadRadius: 2,
+                  offset: Offset(0, 3), // Shadow position
+                ),
+              ],
+            ),
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                dividerColor: Colors.transparent, // Remove the divider line
+              ),
+              child: ExpansionTile(
+                title: Text(
+                  'Player 2',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  fantUser!.player2,
+                  style: TextStyle(
+                    color: Colors.deepOrange,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        "$p2oints Pts",
+                        style: TextStyle(color: Colors.green, fontSize: 24),
+                      ),
+                      SizedBox(width: 60,),
+                      Icon(
+                        Icons.expand_more, // Expand icon
+                        size: 30,
+                        color: Colors.orange[600], // Customize the color of the icon
+                      ),
+                    ]
+                ),
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.orange[400],
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.transparent,
+                          spreadRadius: 7,
+                          blurRadius: 13,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+
+                    padding: EdgeInsets.all(20), // Adds padding to the container
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("bet :"),
+                            Text(
+                              '\$${fantUser!.player2bid}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10), // Space between rows
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("ownership :"),
+                            Text(
+                              '${fantUser!.p2ows}%',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("Cost :"),
+                            Text(
+                              '\$${fantUser!.p2price}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("Team Position :"),
+                            Text(
+                              '${fantUser!.t2pos}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          Card(
-            color: Colors.teal[50],
-            child: ListTile(
-              title: const Text('Player 3'),
-              subtitle: Text(fantUser!.player3,style: TextStyle(color: Colors.deepOrange,fontSize: 20,fontWeight: FontWeight.bold)),
-              trailing: Text("$p3oints Pts",style: TextStyle(color: Colors.green,fontSize: 24),),
+
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 10), // Adds vertical space between tiles
+            decoration: BoxDecoration(
+              color: Colors.teal[50],
+              shape: BoxShape.rectangle, // Ensures the shape is a rounded rectangle
+              borderRadius: BorderRadius.circular(20), // Circular edges
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 8,
+                  spreadRadius: 2,
+                  offset: Offset(0, 3), // Shadow position
+                ),
+              ],
             ),
-          ),
-          Card(
-            color: Colors.teal[50],
-            child: ListTile(
-              title: const Text('Player 3 Bet'),
-              subtitle: Text(fantUser!.player3bid.toString(),style: TextStyle(color: Colors.deepOrange,fontSize: 20,fontWeight: FontWeight.bold)),
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                dividerColor: Colors.transparent, // Remove the divider line
+              ),
+              child: ExpansionTile(
+                title: Text(
+                  'Player 3',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  fantUser!.player3,
+                  style: TextStyle(
+                    color: Colors.deepOrange,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        "$p3oints Pts",
+                        style: TextStyle(color: Colors.green, fontSize: 24),
+                      ),
+                      SizedBox(width: 60,),
+                      Icon(
+                        Icons.expand_more, // Expand icon
+                        size: 30,
+                        color: Colors.orange[600], // Customize the color of the icon
+                      ),
+                    ]
+                ),
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.orange[400],
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.transparent,
+                          spreadRadius: 7,
+                          blurRadius: 13,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+
+                    padding: EdgeInsets.all(20), // Adds padding to the container
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("bet :"),
+                            Text(
+                              '\$${fantUser!.player3bid}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10), // Space between rows
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("ownership :"),
+                            Text(
+                              '${fantUser!.p3ows}%',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("Cost :"),
+                            Text(
+                              '\$${fantUser!.p3price}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("Team Position :"),
+                            Text(
+                              '${fantUser!.t3pos}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 
 
-          Card(
-            color: Colors.teal[50],
-            child: ListTile(
-              title: const Text('Team Bet'),
-              subtitle: Text(fantUser!.Gwbiid.toString(),style: TextStyle(color: Colors.deepOrange,fontSize: 20,fontWeight: FontWeight.bold)),
-            ),
-          ),
+                Card(
+                  color: Colors.teal[50],
+                  child: ListTile(
+                    title: const Text('Team Bet'),
+                    subtitle: Text(fantUser!.Gwbiid.toString(),style: TextStyle(color: Colors.deepOrange,fontSize: 20,fontWeight: FontWeight.bold)),
+                  ),
+                ),
+
         ],
       ),
     );

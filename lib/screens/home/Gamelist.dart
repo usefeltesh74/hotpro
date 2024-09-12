@@ -1,5 +1,4 @@
 import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:hotpro/services/Cloud%20firestore.dart';
 import 'package:provider/provider.dart';
@@ -11,8 +10,8 @@ import 'package:hotpro/screens/home/dropdownmenu.dart';
 import 'package:hotpro/screens/home/teamDropmenu.dart';
 import 'package:hotpro/models/playermodel.dart';
 import 'package:hotpro/services/GetPlayers.dart';
-import 'package:hotpro/screens/home/GetplayerPoints.dart';
 import 'package:hotpro/services/getPlayerFantasydata.dart';
+
 class GameList extends StatefulWidget {
   const GameList({Key? key}) : super(key: key);
 
@@ -35,20 +34,17 @@ class _GameListState extends State<GameList> {
   TextEditingController player2Controller = TextEditingController();
   TextEditingController player3Controller = TextEditingController();
 
-  //GetPlayerPoints getpoints = GetPlayerPoints();
-   //int p1oints=0,p2oints=0,p3oints=0;
-   int plr1id=0,plr2id=0,plr3id=0;
-   //int plr1Teampos=0,plr2Teampos=0,plr3Teampos=0;
+  int plr1id = 0, plr2id = 0, plr3id = 0;
 
-   FplPlayerdata p1fpldata = FplPlayerdata();
-   FplPlayerdata p2fpldata = FplPlayerdata();
-   FplPlayerdata p3fpldata = FplPlayerdata();
-   Future<void> playersFantasydata(int plr1id,int plr2id,int plr3id) async {
-      await p1fpldata.fetchPlayerData(plr1id);
-      await p2fpldata.fetchPlayerData(plr2id);
-      await p3fpldata.fetchPlayerData(plr3id);
-   }
+  FplPlayerdata p1fpldata = FplPlayerdata();
+  FplPlayerdata p2fpldata = FplPlayerdata();
+  FplPlayerdata p3fpldata = FplPlayerdata();
 
+  Future<void> playersFantasydata(int plr1id, int plr2id, int plr3id) async {
+    await p1fpldata.fetchPlayerData(plr1id);
+    await p2fpldata.fetchPlayerData(plr2id);
+    await p3fpldata.fetchPlayerData(plr3id);
+  }
 
   @override
   void initState() {
@@ -120,7 +116,7 @@ class _GameListState extends State<GameList> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Card(
-              color: Colors.teal[100],
+              color: Colors.orange[600],
               elevation: 5,
               margin: EdgeInsets.only(bottom: 20),
               child: Padding(
@@ -130,18 +126,18 @@ class _GameListState extends State<GameList> {
                   children: [
                     Text(
                       'Budget:',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal[800]),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     Text(
                       '\$${fantUser?.Budget.toString() ?? '0'}',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal[600]),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                   ],
                 ),
               ),
             ),
             SizedBox(height: 20),
-            Text('Player 1 Name:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal[800])),
+            Text('Player 1 Name:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
             SizedBox(height: 8),
             TextField(
               controller: player1Controller,
@@ -152,10 +148,8 @@ class _GameListState extends State<GameList> {
                   gPlayers.filterPlayers(val);
                   filteredPlayers1 = gPlayers.filteredPlayers!;
                 });
-
               },
             ),
-            // Display suggestions
             if (filteredPlayers1.isNotEmpty && name1.isNotEmpty)
               Container(
                 height: 150,
@@ -167,23 +161,42 @@ class _GameListState extends State<GameList> {
                       title: Text(filteredPlayers1[index].webName),
                       onTap: () async {
                         plr1id = filteredPlayers1[index].id;
-                        setState((){
+                        await p1fpldata.fetchPlayerData(plr1id);
+                        setState(() {
                           name1 = filteredPlayers1[index].webName;
-                          player1Controller.text=name1;
+                          player1Controller.text = name1;
                           filteredPlayers1.clear();
-                          // Clear suggestions after selection
                         });
-
-
-
                       },
-
                     );
                   },
                 ),
               ),
+            if (name1.isNotEmpty && plr1id != 0)
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(name1,style: TextStyle(color: Colors.deepOrange,fontWeight: FontWeight.bold,fontSize: 18),),
+                      Text(
+                        'Price: ${p1fpldata.price}',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text('Ownership: ${p1fpldata.ownership}%',style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text('team position: ${p1fpldata.teamPosition}',style: TextStyle(fontWeight: FontWeight.bold),)
+                    ],
+                  ),
+                ),
+              ),
             SizedBox(height: 20),
-            Text('Player 1 Bet:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal[800])),
+            Text('Player 1 Bet:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
             SizedBox(height: 8),
             Container(
               constraints: BoxConstraints(maxHeight: 200),
@@ -191,9 +204,8 @@ class _GameListState extends State<GameList> {
               child: PlayerDropMenu(onValueSelected: _updatePlayer1Bid),
             ),
             SizedBox(height: 20),
-            Text('Player 2 Name:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal[800])),
+            Text('Player 2 Name:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
             SizedBox(height: 8),
-
             TextField(
               controller: player2Controller,
               decoration: text_input_dec.copyWith(hintText: "Search for a player"),
@@ -205,7 +217,6 @@ class _GameListState extends State<GameList> {
                 });
               },
             ),
-            // Display suggestions
             if (filteredPlayers2.isNotEmpty && name2.isNotEmpty)
               Container(
                 height: 150,
@@ -215,32 +226,52 @@ class _GameListState extends State<GameList> {
                   itemBuilder: (context, index) {
                     return ListTile(
                       title: Text(filteredPlayers2[index].webName),
-                      onTap: () async{
+                      onTap: () async {
                         plr2id = filteredPlayers2[index].id;
+                        await p2fpldata.fetchPlayerData(plr2id);
                         setState(() {
                           name2 = filteredPlayers2[index].webName;
-                          player2Controller.text=name2;
-                          filteredPlayers2.clear(); // Clear suggestions after selection
+                          player2Controller.text = name2;
+                          filteredPlayers2.clear();
                         });
-
-
                       },
                     );
                   },
                 ),
               ),
+            if (name2.isNotEmpty && plr2id != 0)
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(name2,style: TextStyle(color: Colors.deepOrange,fontWeight: FontWeight.bold,fontSize: 18),),
+                      Text(
+                        'Price: ${p2fpldata.price}',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text('Ownership: ${p2fpldata.ownership}%',style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text('team position: ${p2fpldata.teamPosition}',style: TextStyle(fontWeight: FontWeight.bold),)
+                    ],
+                  ),
+                ),
+              ),
             SizedBox(height: 20),
-            Text('Player 2 Bet:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal[800])),
+            Text('Player 2 Bet:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
             SizedBox(height: 8),
             Container(
-              constraints: BoxConstraints(maxHeight: 200),
               color: Colors.teal[50],
               child: PlayerDropMenu(onValueSelected: _updatePlayer2Bid),
             ),
             SizedBox(height: 20),
-            Text('Player 3 name:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal[800])),
+            Text('Player 3 Name:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
             SizedBox(height: 8),
-
             TextField(
               controller: player3Controller,
               decoration: text_input_dec.copyWith(hintText: "Search for a player"),
@@ -252,7 +283,6 @@ class _GameListState extends State<GameList> {
                 });
               },
             ),
-            // Display suggestions
             if (filteredPlayers3.isNotEmpty && name3.isNotEmpty)
               Container(
                 height: 150,
@@ -262,29 +292,53 @@ class _GameListState extends State<GameList> {
                   itemBuilder: (context, index) {
                     return ListTile(
                       title: Text(filteredPlayers3[index].webName),
-                      onTap: ()async {
+                      onTap: () async {
                         plr3id = filteredPlayers3[index].id;
+                        await p3fpldata.fetchPlayerData(plr3id);
                         setState(() {
                           name3 = filteredPlayers3[index].webName;
-                          player3Controller.text=name3;
-                          filteredPlayers3.clear(); // Clear suggestions after selection
+                          player3Controller.text = name3;
+                          filteredPlayers3.clear();
                         });
-
-
                       },
                     );
                   },
                 ),
               ),
+            if (name3.isNotEmpty && plr3id != 0)
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(name3,style: TextStyle(color: Colors.deepOrange,fontWeight: FontWeight.bold,fontSize: 18),),
+                      Text(
+                        'Price: ${p3fpldata.price}',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text('Ownership: ${p3fpldata.ownership}%',style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text('team position: ${p3fpldata.teamPosition}',style: TextStyle(fontWeight: FontWeight.bold),)
+                    ],
+                  ),
+                ),
+              ),
+
+
             SizedBox(height: 20),
-            Text('Player 3 Bet:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal[800])),
+            Text('Player 3 Bet:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
             SizedBox(height: 8),
             Container(
               color: Colors.teal[50],
               child: PlayerDropMenu(onValueSelected: _updatePlayer3Bid),
             ),
             SizedBox(height: 20),
-            Text('Team Bet:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal[800])),
+            Text('Team Bet:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
             SizedBox(height: 8),
             Container(
               color: Colors.teal[50],
@@ -295,15 +349,19 @@ class _GameListState extends State<GameList> {
               padding: EdgeInsets.symmetric(vertical: 0, horizontal: 100),
               child: ElevatedButton.icon(
                 onPressed: () async {
-                  await playersFantasydata(plr1id, plr2id, plr3id);
+                  //await playersFantasydata(plr1id, plr2id, plr3id);
                   final budget = fantUser!.Budget - player1bid - player2bid - player3bid - teambid;
-                  DatabaseService(uid: userinfo.userid).updateUserData(fantUser!.username,fantUser!.teamid,name1, player1bid,plr1id,0,p1fpldata.ownership,p1fpldata.price,p1fpldata.teamPosition, name2, player2bid,plr2id,0,p2fpldata.ownership,p2fpldata.price,p2fpldata.teamPosition, name3, player3bid,plr3id,0,p3fpldata.ownership,p3fpldata.price,p3fpldata.teamPosition, teambid,fantUser!.GWprofit, fantUser!.profit, budget, true);
-                  // Handle the submit action
-                  print("${fantUser!.player1points}");
+                  DatabaseService(uid: userinfo.userid).updateUserData(
+                    fantUser!.username,
+                    fantUser!.teamid,
+                    name1, player1bid, plr1id, 0, p1fpldata.ownership, p1fpldata.price, p1fpldata.teamPosition,
+                    name2, player2bid, plr2id, 0, p2fpldata.ownership, p2fpldata.price, p2fpldata.teamPosition,
+                    name3, player3bid, plr3id, 0, p3fpldata.ownership, p3fpldata.price, p3fpldata.teamPosition,
+                    teambid, fantUser!.GWprofit, fantUser!.profit, budget, true,
+                  );
                 },
-                icon: Icon(Icons.check),
-                label: Text("Submit"),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.teal[300]),
+                icon: Icon(Icons.save),
+                label: Text('Submit'),
               ),
             ),
           ],

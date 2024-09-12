@@ -35,5 +35,12 @@ var Box_dec = BoxDecoration(
     color: Colors.orange ,
     shape: BoxShape.rectangle,
     borderRadius:  BorderRadius.circular(30),
-    boxShadow: const [BoxShadow(color: Colors.blueAccent,spreadRadius: 7,blurRadius: 13,offset: Offset(0, 3))]
+    boxShadow: const [BoxShadow(color: Colors.teal,spreadRadius: 7,blurRadius: 13,offset: Offset(0, 3))]
+);
+
+var tiles_dec = BoxDecoration(
+    color: Colors.teal[50] ,
+    shape: BoxShape.rectangle,
+    borderRadius:  BorderRadius.circular(20),
+    boxShadow: const [BoxShadow(color: Colors.teal,spreadRadius: 7,blurRadius: 13,offset: Offset(0, 3))]
 );

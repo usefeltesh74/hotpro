@@ -24,16 +24,22 @@ class _sign_inState extends State<sign_in> {
   bool isloading = false;
   Widget build(BuildContext context) {
     return isloading ? Loading_screen() : Scaffold(
-      backgroundColor: Colors.indigo[600],
+      backgroundColor: Colors.teal[700],
       appBar: AppBar(
         leading:  Padding(padding:EdgeInsets.fromLTRB(10, 0, 0, 0),child: Image.asset("assets/12-121809_premier-league-white-logo-hd-png-download.png",height: 70,width: 70,)),
         title: Text(
             "Sign in page",
-            style: TextStyle(color: Colors.white),
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white, shadows: [
+            Shadow(
+              blurRadius: 10.0,
+              color: Colors.black,
+              offset: Offset(2.0, 2.0),
+            ),
+          ]),
         ),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.indigo[800],
+        backgroundColor: Colors.teal,
 
       ),
       body: SingleChildScrollView(
@@ -76,7 +82,7 @@ class _sign_inState extends State<sign_in> {
                 SizedBox(height: 20,),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.amberAccent),
-                  child: Text("Sign in"),
+                  child: Text("Sign in",style: TextStyle(color: Colors.teal),),
                     onPressed: () async {
                       if (_formkey.currentState!.validate()) {
                         setState(() => isloading = true);
@@ -102,7 +108,7 @@ class _sign_inState extends State<sign_in> {
                 SizedBox(height: 20,),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.white70),
-                  child: Text("Sign up"),
+                  child: Text("Sign up",style: TextStyle(color: Colors.teal),),
                   onPressed: (){
                      widget.toggleview();
                   },

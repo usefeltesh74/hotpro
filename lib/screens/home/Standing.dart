@@ -11,12 +11,18 @@ class StandingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.indigo,
+      backgroundColor: Colors.teal[600],
       appBar: AppBar(
-        backgroundColor: Colors.indigoAccent,
+        backgroundColor: Colors.teal[300],
         title: Text(
           'Standing Table',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.orange, shadows: [
+            Shadow(
+              blurRadius: 10.0,
+              color: Colors.black,
+              offset: Offset(2.0, 2.0),
+            ),
+          ]),
         ),
         centerTitle: true,
       ),
@@ -46,6 +52,7 @@ class StandingsPage extends StatelessWidget {
               profit: doc['profit'],
               Budget: doc['Budget'],
               play: doc['play'],
+              GWprofit: doc['GWprofit'],
             );
           }).toList();
 
@@ -54,7 +61,7 @@ class StandingsPage extends StatelessWidget {
 
           return Container(
             decoration: BoxDecoration(
-              color: Colors.indigoAccent,
+              color: Colors.teal,
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(30),
               boxShadow: const [
@@ -89,14 +96,20 @@ class StandingsPage extends StatelessWidget {
                             title: Text(
                               game.username,
                               style: TextStyle(
-                                color: Colors.teal,
+                                color: Colors.deepOrange[600],
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            subtitle: Text(
-                              'Profit: ${game.profit}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text('GW Profit: ${game.GWprofit}',style: TextStyle(color: Colors.teal[700]),),
+                                Text(
+                                  'Total Profit: ${game.profit}',
+                                  style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),
+                                ),
+                              ],
+                            )
                           ),
                         );
                       },

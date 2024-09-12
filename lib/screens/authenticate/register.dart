@@ -24,20 +24,26 @@ class _registerState extends State<register> {
   final _formkey = GlobalKey<FormState>();
   Widget build(BuildContext context) {
     return isloading ? Loading_screen() : Scaffold(
-      backgroundColor: Colors.indigo[600],
+      backgroundColor: Colors.teal[700],
       appBar: AppBar(
         leading:  Image.asset("assets/12-121809_premier-league-white-logo-hd-png-download.png",height: 70,width: 70,),
         title: Text(
           "Register page",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white, shadows: [
+            Shadow(
+              blurRadius: 10.0,
+              color: Colors.black,
+              offset: Offset(2.0, 2.0),
+            ),
+          ]),
         ),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.indigo[800],
+        backgroundColor: Colors.teal,
       ),
       body: SingleChildScrollView(
         child: Container(
-            margin: EdgeInsets.fromLTRB(40, 50, 40, 0),
+            margin: EdgeInsets.fromLTRB(40, 30, 40, 0),
             padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
             decoration: Box_dec,
             child: Form(
