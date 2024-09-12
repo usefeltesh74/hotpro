@@ -19,7 +19,7 @@ class _PlayerDropMenuState extends State<PlayerDropMenu> {
         width: 400,
         label: Text(
           'Select your player bet',
-          style: TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
         ),
         dropdownMenuEntries: const <DropdownMenuEntry<int>>[
           DropdownMenuEntry(value: 0, label: "0 point : 0\$"),

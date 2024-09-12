@@ -25,6 +25,7 @@ class _GameListState extends State<GameList> {
   String name1 = '', name2 = '', name3 = '';
   int player1bid = 0, player2bid = 0, player3bid = 0;
   int teambid = 0;
+  String error='';
   List<Player> allPlayers = [];
   List<Player> filteredPlayers1 = [];
   List<Player> filteredPlayers2 = [];
@@ -115,6 +116,7 @@ class _GameListState extends State<GameList> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             Card(
               color: Colors.orange[600],
               elevation: 5,
@@ -349,6 +351,8 @@ class _GameListState extends State<GameList> {
               padding: EdgeInsets.symmetric(vertical: 0, horizontal: 100),
               child: ElevatedButton.icon(
                 onPressed: () async {
+                  if(plr1id != 0 && plr2id != 0 && plr3id != 0 && player1bid != 0 && player2bid != 0 && player3bid != 0 && teambid != 0 && name1 != '' && name2 !='' && name3 != '')
+                  {
                   //await playersFantasydata(plr1id, plr2id, plr3id);
                   final budget = fantUser!.Budget - player1bid - player2bid - player3bid - teambid;
                   DatabaseService(uid: userinfo.userid).updateUserData(
@@ -359,11 +363,20 @@ class _GameListState extends State<GameList> {
                     name3, player3bid, plr3id, 0, p3fpldata.ownership, p3fpldata.price, p3fpldata.teamPosition,
                     teambid, fantUser!.GWprofit, fantUser!.profit, budget, true,
                   );
+                  }
+                  else
+                  {
+                     setState(() {
+                       error = 'Something is missed!!';
+                     });
+                  }
                 },
                 icon: Icon(Icons.save),
                 label: Text('Submit'),
               ),
             ),
+            SizedBox(height: 10,),
+            Padding(padding:EdgeInsets.only(left: 40),child: Text(error,style: TextStyle(color: Colors.yellow,fontSize: 22,fontWeight: FontWeight.bold),))
           ],
         ),
       ),
