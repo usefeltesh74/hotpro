@@ -18,11 +18,11 @@ class _ResultlistState extends State<Resultlist> {
   Fantasy_model? fantUser;
   int p1oints=0,p2oints=0,p3oints=0;
   GetPlayerPoints getpoints = GetPlayerPoints();
-  Future<void> updatePoints() async {
+  Future<void> updatePoints(int GW) async {
     try {
-      final p1 = await getpoints.fetchPlayerGameweekPoints(3, fantUser!.player1id);
-      final p2 = await getpoints.fetchPlayerGameweekPoints(3, fantUser!.player2id);
-      final p3 = await getpoints.fetchPlayerGameweekPoints(3, fantUser!.player3id);
+      final p1 = await getpoints.fetchPlayerGameweekPoints(GW, fantUser!.player1id);
+      final p2 = await getpoints.fetchPlayerGameweekPoints(GW, fantUser!.player2id);
+      final p3 = await getpoints.fetchPlayerGameweekPoints(GW, fantUser!.player3id);
 
       setState(() {
         p1oints = p1;
@@ -33,16 +33,17 @@ class _ResultlistState extends State<Resultlist> {
     } catch (e) {
       print('Error fetching player points: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching player points. Please try again.')),
+        SnackBar(content: Text("The game week hasn't started yet. ")),
       );
     }
   }
   @override
   void initState() {
     super.initState();
-    // Fetch data when the widget is first built
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      updatePoints();
+      if (fantUser != null) {
+        updatePoints(fantUser!.GW); // Use the gameweek from fantUser
+      }
     });
   }
 
@@ -84,6 +85,7 @@ class _ResultlistState extends State<Resultlist> {
           profit: doc['profit'],
           Budget: doc['Budget'],
           play: doc['play'],
+          GW:doc['GW'],
         );
         break; // Stop looping after finding the matching document
       }
@@ -94,7 +96,11 @@ class _ResultlistState extends State<Resultlist> {
     }
 
     return RefreshIndicator(
-      onRefresh: updatePoints,
+      onRefresh: () async {
+        if (fantUser != null) {
+          await updatePoints(fantUser!.GW); // Use the gameweek from fantUser
+        }
+      },
         // setState(() {
         //   DatabaseService(uid: userinfo!.userid).updateUserData(fantUser!.username, fantUser!.player1, fantUser!.player1bid, fantUser!.player1id,p1oints, fantUser!.player2, fantUser!.player2bid, fantUser!.player2id, p2oints, fantUser!.player3, fantUser!.player3bid, fantUser!.player3id, p3oints, fantUser!.Gwbiid, fantUser!.profit, fantUser!.Budget, fantUser!.play);
         // });
@@ -129,7 +135,7 @@ class _ResultlistState extends State<Resultlist> {
           text: TextSpan(
             children: [
               TextSpan(
-                text: "Your GW bets ",
+                text: "Your GW${fantUser!.GW} bets ",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
               ),
               TextSpan(

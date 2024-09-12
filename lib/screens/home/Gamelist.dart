@@ -101,6 +101,7 @@ class _GameListState extends State<GameList> {
           player3points: doc['player3points'],
           teamid: doc['teamid'],
           GWprofit: doc['GWprofit'],
+          GW: doc['GW'],
         );
         break;
       }
@@ -356,7 +357,7 @@ class _GameListState extends State<GameList> {
                   //await playersFantasydata(plr1id, plr2id, plr3id);
                   final budget = fantUser!.Budget - player1bid - player2bid - player3bid - teambid;
                   DatabaseService(uid: userinfo.userid).updateUserData(
-                    fantUser!.username,
+                    fantUser!.username,fantUser!.GW,
                     fantUser!.teamid,
                     name1, player1bid, plr1id, 0, p1fpldata.ownership, p1fpldata.price, p1fpldata.teamPosition,
                     name2, player2bid, plr2id, 0, p2fpldata.ownership, p2fpldata.price, p2fpldata.teamPosition,

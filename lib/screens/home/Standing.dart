@@ -53,6 +53,7 @@ class StandingsPage extends StatelessWidget {
               Budget: doc['Budget'],
               play: doc['play'],
               GWprofit: doc['GWprofit'],
+              GW : doc['GW'],
             );
           }).toList();
 
@@ -103,7 +104,7 @@ class StandingsPage extends StatelessWidget {
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text('GW Profit: ${game.GWprofit}',style: TextStyle(color: Colors.teal[700]),),
+                                Text('GW${game.GW} Profit: ${game.GWprofit}',style: TextStyle(color: Colors.teal[700]),),
                                 Text(
                                   'Total Profit: ${game.profit}',
                                   style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),
