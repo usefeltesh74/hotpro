@@ -143,13 +143,22 @@ function findTeambetMultiplierDivider(points) {
 // Function to calculate the delivery amount based on factors
 function calc(ownershipfactor, rankingfactor, pricefactor, points, playerbet) {
   if (playerbet / 10000 <= points ) {
-    const multfac = ownershipfactor.multiplier + rankingfactor.multiplier + pricefactor.multiplier + 1;
-    return playerbet * multfac;
+       const multfac = ownershipfactor.multiplier + rankingfactor.multiplier + pricefactor.multiplier + 1;
+        if( playerbet / 10000 == points )
+        {
+            const pprofit = playerbet * multfac - playerbet;
+            return playerbet + ( pprofit * 2 ) ;
+        }
+        else{
+          return playerbet * multfac;
+        }
   } else {
     const divfac = ownershipfactor.divider + rankingfactor.divider + pricefactor.divider + 1;
     return playerbet / divfac;
   }
 }
+
+
 
 function calcTeambet(teamMultiplierDivider, teambet, teamPoints) {
   const teamMultiplier = teamMultiplierDivider.multiplier;
@@ -202,157 +211,160 @@ async function getUserGWPoints(userId, gwId) {
 
 
 // Example Firestore Document Update with API points fetching
-async function updateSpecificDocument(GW) {
+async function updateAllDocuments(GW) {
   try {
-    const docRef = db.collection('fantasy').doc('0q82LrYr9tU8o95uKgT8RnRArng1');
-    const doc = await docRef.get();
-    if (!doc.exists) {
-      console.log('No such document!');
-      return;
-    }
+    // Fetch all documents in the 'fantasy' collection
+    const querySnapshot = await db.collection('fantasy').get();
 
-    // Fetch points for each player from FPL API
-    const player1Id = doc.get('player1id');
-    const player2Id = doc.get('player2id');
-    const player3Id = doc.get('player3id');
+    // Loop through each document in the collection
+    querySnapshot.forEach(async (docSnapshot) => {
+      const docRef = db.collection('fantasy').doc(docSnapshot.id);
+      const doc = docSnapshot;
 
-    const player1points = await getPlayerPoints(player1Id,GW);
-    const player2points = await getPlayerPoints(player2Id,GW);
-    const player3points = await getPlayerPoints(player3Id,GW);
+      if (!doc.exists) {
+        console.log(`No such document: ${docSnapshot.id}`);
+        return;
+      }
+      if( doc.get('play') == true )
+      {
+          // Fetch points for each player from FPL API
+          const player1Id = doc.get('player1id');
+          const player2Id = doc.get('player2id');
+          const player3Id = doc.get('player3id');
 
-    // PLAYER 1 calculations
-    const ownership1Value = doc.get('player1ows');
-    const teamRanking1Value = doc.get('player1 team position');
-    const player1Price = doc.get('player1price');
-    const player1bet = doc.get('player1bid');
+          const player1points = await getPlayerPoints(player1Id, GW);
+          const player2points = await getPlayerPoints(player2Id, GW);
+          const player3points = await getPlayerPoints(player3Id, GW);
 
-    const ownership1Data = findOwnershipMultiplierDivider(ownership1Value);
-    const teamRanking1Data = findTeamRankingMultiplierDivider(teamRanking1Value);
-    const price1Data = findPriceMultiplierDivider(player1Price);
+          // PLAYER 1 calculations
+          const ownership1Value = doc.get('player1ows');
+          const teamRanking1Value = doc.get('player1 team position');
+          const player1Price = doc.get('player1price');
+          const player1bet = doc.get('player1bid');
 
-    const player1delevary = calc(ownership1Data, teamRanking1Data, price1Data, player1points, player1bet);
-    const player1profit = player1delevary - player1bet;
+          const ownership1Data = findOwnershipMultiplierDivider(ownership1Value);
+          const teamRanking1Data = findTeamRankingMultiplierDivider(teamRanking1Value);
+          const price1Data = findPriceMultiplierDivider(player1Price);
 
-    // PLAYER 2 calculations
-    const ownership2Value = doc.get('player2ows');
-    const teamRanking2Value = doc.get('player2 team position');
-    const player2Price = doc.get('player2price');
-    const player2bet = doc.get('player2bid');
+          const player1delevary = calc(ownership1Data, teamRanking1Data, price1Data, player1points, player1bet);
+          const player1profit = player1delevary - player1bet;
 
-    const ownership2Data = findOwnershipMultiplierDivider(ownership2Value);
-    const teamRanking2Data = findTeamRankingMultiplierDivider(teamRanking2Value);
-    const price2Data = findPriceMultiplierDivider(player2Price);
+          // PLAYER 2 calculations
+          const ownership2Value = doc.get('player2ows');
+          const teamRanking2Value = doc.get('player2 team position');
+          const player2Price = doc.get('player2price');
+          const player2bet = doc.get('player2bid');
 
-    const player2delevary = calc(ownership2Data, teamRanking2Data, price2Data, player2points, player2bet);
-    const player2profit = player2delevary - player2bet;
+          const ownership2Data = findOwnershipMultiplierDivider(ownership2Value);
+          const teamRanking2Data = findTeamRankingMultiplierDivider(teamRanking2Value);
+          const price2Data = findPriceMultiplierDivider(player2Price);
 
-    // PLAYER 3 calculations
-    const ownership3Value = doc.get('player3ows');
-    const teamRanking3Value = doc.get('player3 team position');
-    const player3Price = doc.get('player3price');
-    const player3bet = doc.get('player3bid');
+          const player2delevary = calc(ownership2Data, teamRanking2Data, price2Data, player2points, player2bet);
+          const player2profit = player2delevary - player2bet;
 
-    const ownership3Data = findOwnershipMultiplierDivider(ownership3Value);
-    const teamRanking3Data = findTeamRankingMultiplierDivider(teamRanking3Value);
-    const price3Data = findPriceMultiplierDivider(player3Price);
+          // PLAYER 3 calculations
+          const ownership3Value = doc.get('player3ows');
+          const teamRanking3Value = doc.get('player3 team position');
+          const player3Price = doc.get('player3price');
+          const player3bet = doc.get('player3bid');
 
-    const player3delevary = calc(ownership3Data, teamRanking3Data, price3Data, player3points, player3bet);
-    const player3profit = player3delevary - player3bet;
+          const ownership3Data = findOwnershipMultiplierDivider(ownership3Value);
+          const teamRanking3Data = findTeamRankingMultiplierDivider(teamRanking3Value);
+          const price3Data = findPriceMultiplierDivider(player3Price);
 
-    //Teambet calculations
-    const teambet = doc.get('teambid');
-    const teamid = doc.get('teamid');
-    const teambetpoints = teambet / 1000;
-    console.log("teambet/1000 : "+ teambetpoints)
-    const teampoints = parseInt(await getUserGWPoints(teamid, GW), 10);
+          const player3delevary = calc(ownership3Data, teamRanking3Data, price3Data, player3points, player3bet);
+          const player3profit = player3delevary - player3bet;
 
+          // Team bet calculations
+          const teambet = doc.get('teambid');
+          const teamid = doc.get('teamid');
+          const teambetpoints = teambet / 1000;
+          console.log("teambet/1000 : " + teambetpoints);
+          const teampoints = parseInt(await getUserGWPoints(teamid, GW), 10);
 
-    const teamMultdiv = findTeambetMultiplierDivider(teambetpoints);
-    console.log('mult factor :'+teamMultdiv.multiplier);
-    const teamDelivery = calcTeambet(teamMultdiv, teambet, teampoints);
-    console.log('deliv :'+ teamDelivery);
-    const teamProfit = teamDelivery - teambet;
-    console.log('team profit :' + teamProfit);
-
-
+          const teamMultdiv = findTeambetMultiplierDivider(teambetpoints);
+          const teamDelivery = calcTeambet(teamMultdiv, teambet, teampoints);
+          const teamProfit = teamDelivery - teambet;
 
 
+          // Update Firestore document with calculated profit and budget
+          await docRef.update({
+            GWprofit: Math.round(player1profit + player2profit + player3profit + teamProfit),
+            profit: Math.round(doc.get('profit') + player1profit + player2profit + player3profit + teamProfit),
+            Budget: Math.round(doc.get('Budget') + player1delevary + player2delevary + player3delevary + teamDelivery),
+            player1profit: Math.round(player1profit),
+            player2profit: Math.round(player2profit),
+            player3profit: Math.round(player3profit),
+            player1points: player1points,
+            player2points: player2points,
+            player3points: player3points,
+            teamPoints: teampoints,
+            teamProfit: Math.round(teamProfit),
+            play: false,
+            GW: GW+1,
+          });
 
-    // Update Firestore document with calculated profit and budget
-    await docRef.update({
-      GWprofit: Math.round(player1profit + player2profit + player3profit + teamProfit),
-      profit: Math.round(doc.get('profit') + player1profit + player2profit + player3profit + teamProfit),
-      Budget: Math.round(doc.get('Budget') + player1delevary + player2delevary + player3delevary + teamDelivery),
-      player1profit: Math.round(player1profit),
-      player2profit: Math.round(player2profit),
-      player3profit: Math.round(player3profit),
-      player1points:player1points,
-      player2points:player2points,
-      player3points:player3points,
-      teamPoints: teampoints,
-      teamProfit: Math.round(teamProfit),
-      play : false
+          console.log(`Document ${docSnapshot.id} successfully updated!`);
+      }
     });
-
-
-    console.log('Document successfully updated!');
   } catch (error) {
-    console.error('Error updating document:', error);
+    console.error('Error updating documents:', error);
   }
 }
 
 // Call the function with a specific gameweek
-//updateSpecificDocument(3);
+updateAllDocuments(4);
 
-async function UpdateMissingFields() {
-  const collectionRef = db.collection('fantasy');
-  const snapshot = await collectionRef.get();
 
-  if (snapshot.empty) {
-    console.log('No matching documents.');
-    return;
-  }
-
-  snapshot.forEach(async (doc) => {
-    try {
-      // Create an object dynamically with string keys
-      const updateData = {
-        [`player1 team position`]: 0,
-        [`player1id`]: 0,
-        [`player1ows`]: 0.1,
-        [`player1points`]: 0,
-        [`player1price`]: 0.1,
-        [`player1profit`]: 0,
-        [`player2 team position`]: 0,
-        [`player2id`]: 0,
-        [`player2ows`]: 0.1,
-        [`player2points`]: 0,
-        [`player2price`]: 0.1,
-        [`player2profit`]: 0,
-        [`player3 team position`]: 0,
-        [`player3id`]: 0,
-        [`player3ows`]: 0.1,
-        [`player3points`]: 0,
-        [`player3price`]: 0.1,
-        [`player3profit`]: 0,
-        [`teamProfit`]: 0,
-        [`teamid`]: 0,
-        [`teamPoints`]: 0,
-        [`GWprofit`]: 0,
-
-      };
-
-      // Update the document with dynamically created fields
-      await doc.ref.update(updateData);
-
-      console.log(`Document ${doc.id} updated successfully`);
-    } catch (error) {
-      console.error(`Error updating document ${doc.id}:`, error);
-    }
-  });
-}
-
-UpdateMissingFields();
+//async function UpdateMissingFields() {
+//  const collectionRef = db.collection('fantasy');
+//  const snapshot = await collectionRef.get();
+//
+//  if (snapshot.empty) {
+//    console.log('No matching documents.');
+//    return;
+//  }
+//
+//  snapshot.forEach(async (doc) => {
+//    try {
+//      // Create an object dynamically with string keys
+//      const updateData = {
+//        [`player1 team position`]: 0,
+//        [`player1id`]: 0,
+//        [`player1ows`]: 0.1,
+//        [`player1points`]: 0,
+//        [`player1price`]: 0.1,
+//        [`player1profit`]: 0,
+//        [`player2 team position`]: 0,
+//        [`player2id`]: 0,
+//        [`player2ows`]: 0.1,
+//        [`player2points`]: 0,
+//        [`player2price`]: 0.1,
+//        [`player2profit`]: 0,
+//        [`player3 team position`]: 0,
+//        [`player3id`]: 0,
+//        [`player3ows`]: 0.1,
+//        [`player3points`]: 0,
+//        [`player3price`]: 0.1,
+//        [`player3profit`]: 0,
+//        [`teamProfit`]: 0,
+//        [`teamid`]: 0,
+//        [`teamPoints`]: 0,
+//        [`GWprofit`]: 0,
+//
+//      };
+//
+//      // Update the document with dynamically created fields
+//      await doc.ref.update(updateData);
+//
+//      console.log(`Document ${doc.id} updated successfully`);
+//    } catch (error) {
+//      console.error(`Error updating document ${doc.id}:`, error);
+//    }
+//  });
+//}
+//
+//UpdateMissingFields();
 
 
 
