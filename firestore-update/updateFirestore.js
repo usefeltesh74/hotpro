@@ -225,7 +225,7 @@ async function updateAllDocuments(GW) {
         console.log(`No such document: ${docSnapshot.id}`);
         return;
       }
-      if( doc.get('play') == true )
+      if( doc.get('playedthisGW') == true )
       {
           // Fetch points for each player from FPL API
           const player1Id = doc.get('player1id');
@@ -305,6 +305,14 @@ async function updateAllDocuments(GW) {
           });
 
           console.log(`Document ${docSnapshot.id} successfully updated!`);
+      }
+      else
+      {
+        await docRef.update({
+                 GWprofit: 0,
+                 GW: GW+1,
+        });
+      }
       }
     });
   } catch (error) {

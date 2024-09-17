@@ -53,7 +53,7 @@ class StandingsPage extends StatelessWidget {
               Budget: doc['Budget'],
               play: doc['play'],
               GWprofit: doc['GWprofit'],
-              GW : doc['GW'],
+              GW : doc['GW']-1,
             );
           }).toList();
 
