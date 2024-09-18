@@ -317,22 +317,22 @@ async function updateAllDocuments(GW) {
 }
 
 // Call the function with a specific gameweek
-//updateAllDocuments(5);
+updateAllDocuments(5);
 
 
-async function UpdateMissingFields() {
-  const collectionRef = db.collection('fantasy');
-  const snapshot = await collectionRef.get();
-
-  if (snapshot.empty) {
-    console.log('No matching documents.');
-    return;
-  }
-
-  snapshot.forEach(async (doc) => {
-    try {
-      // Create an object dynamically with string keys
-      const updateData = {
+//async function UpdateMissingFields() {
+//  const collectionRef = db.collection('fantasy');
+//  const snapshot = await collectionRef.get();
+//
+//  if (snapshot.empty) {
+//    console.log('No matching documents.');
+//    return;
+//  }
+//
+//  snapshot.forEach(async (doc) => {
+//    try {
+//      // Create an object dynamically with string keys
+//      const updateData = {
 //        [`player1 team position`]: 0,
 //        [`player1id`]: 0,
 //        [`player1ows`]: 0.1,
@@ -355,33 +355,33 @@ async function UpdateMissingFields() {
 //        [`teamid`]: 0,
 //        [`teamPoints`]: 0,
 //        [`GWprofit`]: 0,
-          [`playedthisGW`]: false,
-            [`stand_player1`]: '',
-            [`stand_player1bet`]: 0,
-            [`player1profit`]: 0,
-            [`stand_player2`]: '',
-            [`stand_player2bet`]: 0,
-            [`player2profit`]: 0,
-            [`stand_player3`]: '',
-            [`stand_player3bet`]: 0,
-            [`player3profit`]: 0,
-            [`GWprofit`]: 0,
-            [`stand_GW`]: 4,
-
-
-      };
-
-      // Update the document with dynamically created fields
-      await doc.ref.update(updateData);
-
-      console.log(`Document ${doc.id} updated successfully`);
-    } catch (error) {
-      console.error(`Error updating document ${doc.id}:`, error);
-    }
-  });
-}
-
-UpdateMissingFields();
+//          [`playedthisGW`]: false,
+//            [`stand_player1`]: '',
+//            [`stand_player1bet`]: 0,
+//            [`player1profit`]: 0,
+//            [`stand_player2`]: '',
+//            [`stand_player2bet`]: 0,
+//            [`player2profit`]: 0,
+//            [`stand_player3`]: '',
+//            [`stand_player3bet`]: 0,
+//            [`player3profit`]: 0,
+//            [`GWprofit`]: 0,
+//            [`stand_GW`]: 4,
+//
+//
+//      };
+//
+//      // Update the document with dynamically created fields
+//      await doc.ref.update(updateData);
+//
+//      console.log(`Document ${doc.id} updated successfully`);
+//    } catch (error) {
+//      console.error(`Error updating document ${doc.id}:`, error);
+//    }
+//  });
+//}
+//
+//UpdateMissingFields();
 
 
 
