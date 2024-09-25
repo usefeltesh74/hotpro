@@ -66,9 +66,6 @@ class _ResultlistState extends State<Resultlist> {
           player1bid: doc['player1bid'],
           player2bid: doc['player2bid'],
           player3bid: doc['player3bid'],
-          player1points: doc['player1points'],
-          player2points: doc['player2points'],
-          player3points: doc['player3points'],
           player1id: doc['player1id'],
           player2id: doc['player2id'],
           player3id: doc['player3id'],
@@ -86,6 +83,9 @@ class _ResultlistState extends State<Resultlist> {
           Budget: doc['Budget'],
           play: doc['play'],
           GW:doc['GW'],
+          p1url: doc['p1url'],
+          p2url: doc['p2url'],
+          p3url: doc['p3url'],
         );
         break; // Stop looping after finding the matching document
       }
@@ -173,6 +173,7 @@ class _ResultlistState extends State<Resultlist> {
                 dividerColor: Colors.transparent, // Remove the divider line
               ),
               child: ExpansionTile(
+                leading: Image.network(fantUser!.p1url,width: 50,height: 50,),
                 title: Text(
                   'Player 1',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -305,6 +306,7 @@ class _ResultlistState extends State<Resultlist> {
                 dividerColor: Colors.transparent, // Remove the divider line
               ),
               child: ExpansionTile(
+                leading: Image.network(fantUser!.p2url,width: 90,height: 90,),
                 title: Text(
                   'Player 2',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -437,6 +439,7 @@ class _ResultlistState extends State<Resultlist> {
                 dividerColor: Colors.transparent, // Remove the divider line
               ),
               child: ExpansionTile(
+                leading: Image.network(fantUser!.p3url,width: 50,height: 50,),
                 title: Text(
                   'Player 3',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

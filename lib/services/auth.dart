@@ -52,7 +52,7 @@ class fireauth
     try{
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User? user = result.user;
-      await DatabaseService(uid: user!.uid).updateUserData(username,teamid," ", 0,0,0,0,0,0, " ",0,0,0,0,0,0," ", 0,0,0,0,0,0, 0 ,0, 0, 1000000 , false);
+      await DatabaseService(uid: user!.uid).updateUserData(username: username,teamid: teamid,GW: 0,stand_GW: 0,stand_player1: '',stand_player2: '',stand_player3: '',stand_player1bet: 0,stand_player2bet: 0,stand_player3bet: 0,player1profit: 0,player2profit: 0,player3profit: 0,profit: 0,GWprofit: 0,Budget:  1000000 ,play: false);
       return _userfromfirebaseuser(user);
     }
     catch(e){

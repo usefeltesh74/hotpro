@@ -30,6 +30,7 @@ class _GameListState extends State<GameList> {
   List<Player> filteredPlayers1 = [];
   List<Player> filteredPlayers2 = [];
   List<Player> filteredPlayers3 = [];
+  String url1='',url2='',url3='';
 
   TextEditingController player1Controller = TextEditingController();
   TextEditingController player2Controller = TextEditingController();
@@ -96,12 +97,7 @@ class _GameListState extends State<GameList> {
           Budget: doc['Budget'],
           profit: doc['profit'],
           username: doc['username'],
-          player1points: doc['player1points'],
-          player2points: doc['player2points'],
-          player3points: doc['player3points'],
           teamid: doc['teamid'],
-          GWprofit: doc['GWprofit'],
-          GW: doc['GW'],
         );
         break;
       }
@@ -167,6 +163,7 @@ class _GameListState extends State<GameList> {
                         await p1fpldata.fetchPlayerData(plr1id);
                         setState(() {
                           name1 = filteredPlayers1[index].webName;
+                          url1 = filteredPlayers1[index].photoUrl;
                           player1Controller.text = name1;
                           filteredPlayers1.clear();
                         });
@@ -187,6 +184,7 @@ class _GameListState extends State<GameList> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Image.network(url1,width: 120,height: 120,),
                       Text(name1,style: TextStyle(color: Colors.deepOrange,fontWeight: FontWeight.bold,fontSize: 18),),
                       Text(
                         'Price: ${p1fpldata.price}',
@@ -234,6 +232,7 @@ class _GameListState extends State<GameList> {
                         await p2fpldata.fetchPlayerData(plr2id);
                         setState(() {
                           name2 = filteredPlayers2[index].webName;
+                          url2 = filteredPlayers2[index].photoUrl;
                           player2Controller.text = name2;
                           filteredPlayers2.clear();
                         });
@@ -254,6 +253,7 @@ class _GameListState extends State<GameList> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Image.network(url2,width: 120,height: 120,),
                       Text(name2,style: TextStyle(color: Colors.deepOrange,fontWeight: FontWeight.bold,fontSize: 18),),
                       Text(
                         'Price: ${p2fpldata.price}',
@@ -300,6 +300,7 @@ class _GameListState extends State<GameList> {
                         await p3fpldata.fetchPlayerData(plr3id);
                         setState(() {
                           name3 = filteredPlayers3[index].webName;
+                          url3 = filteredPlayers3[index].photoUrl;
                           player3Controller.text = name3;
                           filteredPlayers3.clear();
                         });
@@ -320,6 +321,7 @@ class _GameListState extends State<GameList> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Image.network(url3,width: 120,height: 120,),
                       Text(name3,style: TextStyle(color: Colors.deepOrange,fontWeight: FontWeight.bold,fontSize: 18),),
                       Text(
                         'Price: ${p3fpldata.price}',
@@ -357,12 +359,10 @@ class _GameListState extends State<GameList> {
                   //await playersFantasydata(plr1id, plr2id, plr3id);
                   final budget = fantUser!.Budget - player1bid - player2bid - player3bid - teambid;
                   DatabaseService(uid: userinfo.userid).updateUserData(
-                    fantUser!.username,
-                    fantUser!.teamid,
-                    name1, player1bid, plr1id, 0, p1fpldata.ownership, p1fpldata.price, p1fpldata.teamPosition,
-                    name2, player2bid, plr2id, 0, p2fpldata.ownership, p2fpldata.price, p2fpldata.teamPosition,
-                    name3, player3bid, plr3id, 0, p3fpldata.ownership, p3fpldata.price, p3fpldata.teamPosition,
-                    teambid, fantUser!.GWprofit, fantUser!.profit, budget, true,
+                    player1name: name1, player1bid: player1bid,player1id:  plr1id, p1ows:  p1fpldata.ownership,p1price:  p1fpldata.price,p1teampos:  p1fpldata.teamPosition,
+                    player2name: name2,player2bid:  player2bid, player2id: plr2id, p2ows:  p2fpldata.ownership,p2price:  p2fpldata.price,p2teampos:  p2fpldata.teamPosition,
+                    player3name: name3,player3bid:  player3bid,player3id:  plr3id, p3ows:  p3fpldata.ownership,p3price:  p3fpldata.price,p3teampos:  p3fpldata.teamPosition,
+                    teambid: teambid, Budget: budget, play:  true,p1url:url1,p2url: url2,p3url: url3,
                   );
                   }
                   else
